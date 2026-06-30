@@ -178,4 +178,39 @@ mosaicplot(___ ~ ___, data = ___, shade = ___)
 
 ```
 
- 
+**Participation 4: Please do your calculations for the remaining problems below and then record your answers in CANVAS for the quiz titled Participation 4**
+
+The following questions are all repetitions of  exercises 1 -- 4,  but with different variables.
+
+Suppose we want to know if `addr_type` is associated with `severity_desc`. Read about these variables in the code book. Then do the following.
+
+### Exercise 5
+
+Create a frequency table of `severity_desc`.
+
+### Exercise 6
+
+Create a frequency table of `addr_type`.
+
+
+Run the following code to classify the "Unknown" values of `severity_desc` as NAs.
+
+```{r recode-severity}
+
+#replace the label "unknown" for severity with NA, all other values unchanged
+
+accidents <- accidents %>%
+             mutate(severity_desc = ifelse(severity_desc == "Unknown", NA, severity_desc))
+
+```
+
+### Exercise 7
+
+After running the code chunk named "recode-severity", create a contingency table or cross-tab of the frequencies for `addr_type` and `severity_desc` as shown in Exercise 2. What percentage of accidents that occurred in an intersection resulted in injury collision. 
+
+
+Note: Think about whether you want `addr_type` on the rows or the column. Also be sure to not include any missing values by setting the `show_na` argument in the `tabyl` function to FALSE.
+
+### Exercise 8
+
+According to your table from Exercise 7, what percentage of accidents that occurred in an intersection should result in injury if there is no association between the location of an accident and the severity?
