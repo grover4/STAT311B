@@ -178,6 +178,7 @@ mosaicplot(___ ~ ___, data = ___, shade = ___)
 
 ```
 
+
 **Participation 4: Please do your calculations for the remaining problems below and then record your answers in CANVAS for the quiz titled Participation 4**
 
 The following questions are all repetitions of  exercises 1 -- 4,  but with different variables.
@@ -213,4 +214,8 @@ Note: Think about whether you want `addr_type` on the rows or the column. Also b
 
 ### Exercise 8
 
-According to your table from Exercise 7, what percentage of accidents that occurred in an intersection should result in injury if there is no association between the location of an accident and the severity?
+According to your table from Exercise 7, how many accidents should we expect to see in the cell where the `addr_type` is an "Intersection" and the `severity_desc` is "Injury collision" if there is no association?
+
+### Exercise 9
+
+Use your table from Exercise 7 and your answer to the previous part to calculate the standardized residual for the cell where the `addr_type` is an "Intersection" and the `severity_desc` is "Injury collision".
