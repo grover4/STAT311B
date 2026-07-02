@@ -66,7 +66,7 @@ Fit a simple linear regression model `evals_slr` predicting the course evaluatio
 
 ### Exercise 3
 
-Use your equation from Exercise 4 to predict the `score` for a professor whose `bty_avg` is 5. If their actual score was 4.5, calculate the prediction error.
+Use your equation from Exercise 2 to predict the `score` for a professor whose `bty_avg` is 5. If their actual score was 4.5, calculate the prediction error.
 
 * * *
 
