@@ -208,7 +208,7 @@ Suppose we want to consider `sex` as a possible categorical predictor of `speed`
 Make a boxplot of `speed` versus `sex`. Also find the difference in mean speeds between males and females for the classdata. Just informally, does there appear to be a relationship between these variables?
 
 
-## Exercise 2
+### Exercise 2
 
 Fill in the blanks in the code chunk below to implement the bootstrap method to create 1,000 samples and calculate the difference in mean `speed` between males and females for each resample (male - female). Create a histogram of the bootstrapped distribution of the difference in mean speeds. Then find a 95% interval estimate for the true effect of `sex` on `speed`. 
 
