@@ -1,0 +1,231 @@
+---
+title: "Bootstrapping the Class Survey "
+subtitle: "Ranjini Grove"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+In this report we will analyze survey responses from STAT 311 students collected at the start of spring quarter 2025. Specifically, we are interested in going beyond summaries to make inferences about all UW students. 
+
+## Learning Objectives
+
+Find interval estimates using the bootstrap method for
+
+- a population mean
+
+- a population slope
+
+- a differences of two population means 
+
+## Packages
+
+The packages we will be using have been loaded in the code chunk below. You can add additional packages as necessary. 
+
+```{r setup, include=FALSE}
+#setup code chunk is where you load the packages, set options, read in data
+
+library(tidyverse)      #umbrella suite
+library(tidymodels)     #for bootstrapping with infer
+library(skimr)          #for skimming variables
+
+
+knitr::opts_chunk$set( message = FALSE,
+                       warning = FALSE)
+
+
+classdata <- read_csv(file="classdata_spr2025.csv")  #read in data
+
+```
+
+## Data
+
+The class data was collected via a Google form and was downloaded as a CSV file named `classdata_spr2025.csv`. The codebook with a description of the variables in the dataset is shown below. The overall data cleaning steps were extremely minimal. I renamed the variables so they were shorter. Additional data cleaning and recoding is done for the variables involved in specific analyses and these will be described in the relevant sections. All the code is included in the Rmarkdown document. 
+
+```{r data-cleaning, include = FALSE}
+
+#code below renames the variables
+
+classdata <- classdata %>%
+             rename( class = contains("class standing"),
+                     credits = contains("credits"),
+                     diet = contains("vegetarian"),
+                     sleep = contains("sleep"),
+                     dating_pref=contains("attractive"),
+                     sex=contains("sex"),
+                     study=contains("study"),
+                     birthday=contains("born"),
+                     haircut=contains("haircut"),
+                     shoes=contains("shoes"),
+                     nervous=contains("nervous"),
+                     siblings=contains("siblings"),
+                     which_tire=contains("tire"),
+                     height=contains("height"),
+                     speed=contains("fastest"),
+                     years_in_wa=contains("WA state"),
+                     travel=contains("visited"),
+                     salary=contains("earn"),
+                     breakfast=contains("breakfast"),
+                     eyewear=contains("eyeglasses"),
+                     rent=contains("rent"),
+                     climate_worry = contains("global warming") ) 
+
+```
+
+
+|Variable |  Description |
+| :----:  |  :--------  |
+|Timestamp| Self explanatory |
+|class    | What is your class standing?|
+|credits  | How many credits are you signed up for in Spr 2025?|
+|diet| Are you a vegetarian?|
+|sleep    | How many hours of sleep do you get on average at night?|
+|dating_pref| Would you date someone with a great personality even if you did not find them attractive? |
+| sex     | What is your biological sex? |
+|study    |How many hours do you study outside of classes (on average) per week? (if this is your first quarter at UW, you may skip this question) |
+|birthday | What day of the week were you born? |
+|haircut | What is the most (in dollars) you have paid for a haircut? |
+|shoes   | How many pairs of shoes do you own? |
+|nervous | How nervous are you about taking STAT 311?|
+|siblings | How many siblings do you have? (include step sibs too)|
+|which_tire| Suppose you were late to an exam and decided to use the "flat tire" excuse. Which tire would you  pick?|
+|height | What is your height (in inches)?|
+|speed| What is the fastest you have driven (mph)|
+|years_in_wa | How many years have you lived in WA state? (enter 0 if none, round your answer to a whole number)|
+|travel |How many states in the U.S. have you visited?|
+|salary| How much money did you earn last year (in dollars )? |
+|breakfast| Do you usually eat breakfast in the morning?|
+|eyewear | Do you wear eyeglasses or contact lenses?|
+|rent | What is your monthly rent?|
+|climate_worry| Scientists predict that global warming may have big effects on the polar regions within the next 100 years. One of the possible effects is that the northern ice cap may completely melt. Would this bother you a great deal, some, a little, or not at all if it actually happened?|
+
+
+
+
+## Exercises
+
+### Part 1: How many credits?
+
+In this section, we will estimate the number of credits that UW students signed up for in Spring 2025 using our class as the sample.  
+
+The first step in any data analysis is to become acquainted with the data. We begin by skimming the variable `credits` to get a bird's eye view of the values, missingness and other possible issues. 
+
+```{r skim-credits}
+classdata %>% skim(credits)
+
+```
+
+We notice that we have a mix of students, those who are studying full time and also part time students. It makes sense to only consider one of these groups since they are different populations of students. Let's go back to the data cleaning code chunk and extract just the rows for students who are taking at least 12 credits. This will be our `classdata` for the rest of the analysis.
+
+### Exercise 1
+
+Make a plot to display the distribution of `credits`. 
+
+
+### Exercise 2
+
+Based on our class, what is your estimate for the average number of credits that UW students signed up for in Spring 2025?
+
+
+As we know, estimates from samples can vary (depending on the individuals in our sample), so it is important to assess how this number might vary across samples taken from the population of UW students. 
+We will do so using a technique known as the bootstrap method. The idea is that we clone the population using our sample. Then we:
+
+-   **Step 1.** Take a new sample from the cloned (bootstrapped) population.
+-   **Step 2.** Calculate the summary - such as mean, median, proportion, slope, etc. from the new sample.
+-   **Step 3.** Repeat steps (1) and (2) many times.
+
+
+### Exercise 3
+
+Fill in the blanks in the code chunk below to implement the bootstrap method to draw 1,000 new samples of size $n = 122$ from the bootstrapped population, and calculate the mean number of `credits` for each.  
+
+```{r bootstrap-mean-credits, eval = FALSE}
+set.seed (45)            #for reproducibility
+    
+boot_mean.df <- classdata %>% 
+      ___( response = ___ ) %>% 
+      ___(reps = ___, type = "___") %>% 
+      calculate(stat = "___")
+```
+
+### Exercise 4
+
+Make a histogram to display the distribution of the mean `credits` from the 1,000 resamples. 
+
+
+The histogram of the sample means in Exercise 4 is an approximation of the variability we would see if we could sample repeatedly from the actual population.
+
+### Exercise 5
+
+Fill in the blanks to calculate a 95% interval estimate for the mean number of credits taken by all students at UW. Then report it with a sentence.
+
+```{r calc-interval, eval = FALSE}
+boot_mean.df %>% 
+      summarise( lower = quantile(stat, ___),
+                 upper = quantile(stat,____))
+    
+```
+  
+
+
+It turns out that according to data pulled on 5/1/2025 from UW Academic Data Management, the average number of credits that UW students signed up for in Spring 2025 is 15.1. Does our interval contain this value in it? If not, what do you think went wrong?
+    
+
+    
+* * *
+
+The bootstrap method can be used to generate interval estimates for any population number, such the mean, median, difference of means, slope etc. 
+
+* * *
+
+## Part II
+
+In this part we will construct an interval estimate for a slope. Suppose you want to build a model for the variable `speed` which measures the fastest you have ever driven. A possible numeric predictor is `height`. 
+
+- Examine these variables in the dataset and decide on whether they need cleaning or filtering etc. If so, do this in the data cleaning code chunk at the top.
+
+### Exercise 1
+
+Make a scatter plot of `height` versus `speed`. Does there appear to be a relationship? 
+
+
+
+### Exercise 2
+
+Implement the bootstrap method to create 1,000 resamples and calculate the slope of height on speed for each resample. Create a histogram of the bootstrapped distribution of the slopes. Then find a 95% interval estimate for the effect of `height` on `speed`.  Use a seed of 114.
+
+
+* * *
+
+
+In the last part we will construct an interval estimate for a difference of two  means. 
+
+## Part III
+
+Suppose we want to consider `sex` as a possible categorical predictor of `speed`. Examine the variable `sex` in the dataset and clean it up as necessary
+
+### Exercise 1
+
+Make a boxplot of `speed` versus `sex`. Also find the difference in mean speeds between males and females for the classdata. Just informally, does there appear to be a relationship between these variables?
+
+
+## Exercise 2
+
+Fill in the blanks in the code chunk below to implement the bootstrap method to create 1,000 samples and calculate the difference in mean `speed` between males and females for each resample (male - female). Create a histogram of the bootstrapped distribution of the difference in mean speeds. Then find a 95% interval estimate for the true effect of `sex` on `speed`. 
+
+
+```{r bootstrap-diff-means, eval = FALSE}
+set.seed(1122)
+
+boot_diff_means.df <- classdata %>% 
+                      filter(!is.na(sex))%>%
+                     specify( response = ___, explanatory = ___) %>% 
+                       generate(reps = ___, type = "___") %>% 
+                       calculate(stat = "___", 
+                                order = c("___", "___"))
+   
+
+```
+
+
+
+
